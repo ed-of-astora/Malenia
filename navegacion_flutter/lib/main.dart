@@ -13,57 +13,78 @@ class NavegacionFlutterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Erdtree: Navegación Flutter',
+      title: 'Mi primer APP con navegación: Ed Rubio',
       theme: ThemeData(primarySwatch: Colors.red, useMaterial3: true),
 
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }
 
-// Pantalla de inicio:
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+// Inicio de sesión:
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
-  // Mensajito para enviar a la siguiente pantalla:
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _nameController = TextEditingController();
+
   final String radahnFestival =
       "Champions, welcome! The stars have aligned! The festival is nigh! General Radahn, mightiest demigod of the Shattering, awaits you! Champions, prepare for battle! Defeat the General, claim glory, and grab that Great Rune! A celebration of war! The Radahn Festival!";
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('LIMGRAVE'),
-        backgroundColor: Colors.green,
-        foregroundColor: Colors.white70,
-      ),
-
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Limgrave',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            const Text('Ir al siguiente sitio de gracia.'),
-            const SizedBox(height: 20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'PANTALLA DE INICIO',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              Image.asset('assets/ashenOne.png', width: 240),
+              const SizedBox(height: 20),
 
-            // Navvegación:
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    // El mensajito del Radahn Festival. :)
-                    builder: (context) => DetailScreen(message: radahnFestival),
-                  ),
-                );
-              },
-              child: const Text('Acceder a Caelid.'),
-            ),
-          ],
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Escribe tu nombre',
+                  labelText: 'Nombre del campeón...',
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: () {
+                  String nombre = _nameController.text.trim();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailScreen(
+                        message: "¡Hola, $nombre! \n\n$radahnFestival",
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('CONTINUAR'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -91,10 +112,7 @@ class DetailScreen extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.network(
-              'https://www.gamepur.com/wp-content/uploads/2022/03/03112104/Elden-Ring-Radahn-Festival.jpg?w=1200',
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset('assets/ashenOne.png', fit: BoxFit.cover),
           ),
 
           Positioned.fill(child: Container(color: Colors.black54)),
@@ -105,15 +123,6 @@ class DetailScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'JERREN:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.amber,
-                      letterSpacing: 2.0,
-                    ),
-                  ),
                   const SizedBox(height: 20),
 
                   Container(
@@ -125,7 +134,7 @@ class DetailScreen extends StatelessWidget {
                     child: Text(
                       message,
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 22,
                         color: Colors.white,
                         fontStyle: FontStyle.italic,
                         height: 1.5,
@@ -148,7 +157,7 @@ class DetailScreen extends StatelessWidget {
                         vertical: 20,
                       ),
                     ),
-                    label: const Text('Retirada. :('),
+                    label: const Text('Regresar. :('),
                   ),
                 ],
               ),
