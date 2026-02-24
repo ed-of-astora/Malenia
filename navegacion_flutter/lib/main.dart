@@ -17,6 +17,7 @@ class MainApp extends StatelessWidget {
     @override
     Widget build(BuildContext context) {
         return const MaterialApp(
+            title: "POST PAGE",
             home: LoginPage(),
         );
     }
@@ -69,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                     Navigator.push(context,
                                         MaterialPageRoute(
-                                            builder: (context) => HomePage(
+                                            builder: (context) => PostPage(
                                                 message: "¡Hola, $nombre!",
                                             ),
                                         ),
@@ -86,17 +87,91 @@ class _LoginPageState extends State<LoginPage> {
     }
 }
 
-// -- HOME PAGE ------------------------------------------------------------- //
+// -- POST PAGE ------------------------------------------------------------- //
 
-class HomePage extends StatefulWidget {
+class PostPage extends StatefulWidget {
     final String message;
-    const HomePage({super.key, required this.message});
+    const PostPage({super.key, required this.message});
 
     @override
-    State<HomePage> createState() => _HomePageState();
+    State<PostPage> createState() => _PostPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PostPageState extends State<PostPage> {
+    String responseText = "";
+
+    Future<void> createPost() async {
+        final url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+
+        final response = await http.post(url, headers: {
+            "Content-Type": "application/json;  charset=UTF-8",
+        }, body: jsonEncode({
+            "title": "Starscourge POST",
+            "body": "Champions, welcome!",
+            "userId": 1,
+        }));
+
+        if (response.statusCode == 201) {
+            setState(() {
+                responseText = response.body;
+            });
+        } else {
+            setState(() {
+                responseText = "ERROR: ${response.statusCode}";
+            });
+        }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+            appBar: AppBar(
+                title: const Text("POST Page"),
+                centerTitle: true,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                elevation: 0,
+            ),
+
+            body: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    children: [
+                        Text(widget.message,
+                            style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                        ),
+
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                            onPressed: createPost,
+                            child: const Text("Enviar petición POST"),
+                        ),
+
+                        const SizedBox(height: 20),
+                        Text(responseText),
+                    ]
+                )
+            )
+        );
+    }
+}
+
+// -- GET PAGE -------------------------------------------------------------- //
+
+class GetPage extends StatefulWidget {
+    final String message;
+    const GetPage({super.key, required this.message});
+
+    @override
+    State<GetPage> createState() => _GetPageState();
+}
+
+class _GetPageState extends State<GetPage> {
     double? exchangeRate;
     bool loading = true;
 
